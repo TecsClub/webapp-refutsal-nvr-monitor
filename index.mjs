@@ -4,7 +4,7 @@ import { responseTypes, discordWebhookUrl } from "./constant.mjs";
 const now = new Date().getTime();
 const timeOffset = 1000 * 60 * 60 * 9;
 const nowStr = `${new Date(now + timeOffset).toISOString().slice(0, 16)}:00`;
-const oneHourAgo = now - 36000000 + timeOffset;
+const oneHourAgo = now - 3600000 + timeOffset;
 const oneHourAgoStr = `${new Date(oneHourAgo).toISOString().slice(0, 16)}:00`;
 const authInfo = "user=admin&password=qwerty123456";
 

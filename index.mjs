@@ -4,14 +4,14 @@ import { responseTypes, discordWebhookUrl } from "./constant.mjs";
 const now = new Date().getTime();
 const timeOffset = 1000 * 60 * 60 * 9;
 const nowStr = `${new Date(now + timeOffset).toISOString().slice(0, 16)}:00`;
-const tenMinAgo = now - 600000 + timeOffset;
-const tenMinAgoStr = `${new Date(tenMinAgo).toISOString().slice(0, 16)}:00`;
+const oneHourAgo = now - 600000 + timeOffset;
+const oneHourAgoStr = `${new Date(oneHourAgo).toISOString().slice(0, 16)}:00`;
 const authInfo = "user=admin&password=qwerty123456";
 
 console.log("now:", now);
-console.log("tenMinAgoStr:", tenMinAgoStr);
+console.log("oneHourAgoStr:", oneHourAgoStr);
 
-const resJson = await getEvents(tenMinAgoStr, authInfo);
+const resJson = await getEvents(oneHourAgoStr, authInfo);
 const message = getMessage(resJson);
 const discordResJson = await postDiscordMessage(discordWebhookUrl, message);
 
@@ -30,7 +30,7 @@ async function getEvents(timeStr, authInfo) {
 
 // 메세지 생성 함수
 function getMessage(res) {
-  const resultStr = `**${tenMinAgoStr.slice(11, 16)} ~ ${nowStr.slice(
+  const resultStr = `**${oneHourAgoStr.slice(11, 16)} ~ ${nowStr.slice(
     11,
     16
   )}**`;

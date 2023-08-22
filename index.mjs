@@ -48,8 +48,8 @@ function getMessage(res) {
 function getThread(res) {
   const eventsSummary = res.events.map((event) => {
     const { type, timestamp, rowid, devices } = event;
-    const hour = new Date(timestamp * 1000).getHours();
-    const minute = new Date(timestamp * 1000).getMinutes();
+    const hour = new Date(timestamp * 1000 + timeOffset).getHours();
+    const minute = new Date(timestamp * 1000 + timeOffset).getMinutes();
     return JSON.stringify({
       type: responseTypes[type].Description,
       // timestamp,

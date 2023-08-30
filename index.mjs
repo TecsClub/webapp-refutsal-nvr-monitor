@@ -4,16 +4,28 @@ import { responseTypes, discordWebhookUrl } from "./constant.mjs";
 const now = new Date().getTime();
 const timeOffset = 1000 * 60 * 60 * 9;
 const nowStr = `${new Date(now + timeOffset).toISOString().slice(0, 16)}:00`;
-const oneHourAgo = now - 3600000 + timeOffset;
+const oneHourAgo = now - 1000 * 60 * 60 * 1 + timeOffset;
 const oneHourAgoStr = `${new Date(oneHourAgo).toISOString().slice(0, 16)}:00`;
+const oneDayAgo = now - 1000 * 60 * 60 * 24 + timeOffset;
+const oneDayAgoStr = `${new Date(oneDayAgo).toISOString().slice(0, 16)}:00`;
 const authInfo = "user=admin&password=qwerty123456";
-
 console.log("now:", now);
 console.log("oneHourAgoStr:", oneHourAgoStr);
+console.log("oneDayAgoStr:", oneDayAgoStr);
 
-const resJson = await getEvents(oneHourAgoStr, authInfo);
-const message = getMessage(resJson);
-const discordResJson = await postDiscordMessage(discordWebhookUrl, message);
+if (nowStr.slice(11, 13) === "00") {
+  //if now is 00:00:00
+  getEvetnsSinceAndPushToDiscord(oneDayAgoStr, "daily");
+}
+getEvetnsSinceAndPushToDiscord(oneHourAgoStr, "hourly");
+
+// 이벤트를 받아서 디스코드로 전송하는 함수
+async function getEvetnsSinceAndPushToDiscord(timeStr, type) {
+  const resJson = await getEvents(timeStr, authInfo);
+  const message = getMessage(timeStr, resJson, type);
+  if (message === null) return;
+  const discordResJson = await postDiscordMessage(discordWebhookUrl, message);
+}
 
 // 이벤트 조회 요청 함수
 async function getEvents(timeStr, authInfo) {
@@ -29,14 +41,17 @@ async function getEvents(timeStr, authInfo) {
 }
 
 // 메세지 생성 함수
-function getMessage(res) {
-  const resultStr = `**${oneHourAgoStr.slice(11, 16)} ~ ${nowStr.slice(
-    11,
-    16
-  )}**`;
+function getMessage(timeStr, res, type) {
+  const resultStr =
+    type === "hourly"
+      ? `**${timeStr.slice(11, 16)} ~ ${nowStr.slice(11, 16)}**`
+      : `**${timeStr.slice(0, 16).split("T").join(" ")} ~ ${nowStr
+          .slice(0, 16)
+          .split("T")
+          .join(" ")}**`;
 
   if (res.total === 0) {
-    return `${resultStr}: ✅ 특이사항 없음`;
+    return type === "hourly" ? null : `${resultStr}: ✅ 특이사항 없음`;
   } else {
     return `${resultStr}: 🚨 특이사항 ${
       res.total

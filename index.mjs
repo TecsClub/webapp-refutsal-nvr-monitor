@@ -73,7 +73,8 @@ function getThread(res) {
     });
   });
   console.log("eventsSummary:", eventsSummary.length);
-  return `${[...new Set(eventsSummary)].join("\n")}
+  const eventsSummaryStr = [...new Set(eventsSummary)].join("\n");
+  return `${eventsSummaryStr.slice(0, 1500)} ${eventsSummaryStr.length > 1500 ? `... \n\n+ ${eventsSummary.length - 26}개 이벤트` : ""}
     `;
 }
 
